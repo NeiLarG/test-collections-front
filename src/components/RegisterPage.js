@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
-import { register } from '../services/auth.service';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { registerAction } from '../actions/auth.actions';
 
 class RegisterPage extends Component {
   constructor(props) {
@@ -11,8 +12,6 @@ class RegisterPage extends Component {
       confirmPassword: '',
       nickName: '',
       birthDate: '',
-      successAlertShow: false,
-      failAlertShow: false,
     };
   }
 
@@ -37,28 +36,18 @@ class RegisterPage extends Component {
   };
 
   onClickRegister = () => {
-    register(this.state)
-      .then(() => this.setState({
-        successAlertShow: true,
-        failAlertShow: false,
-      }))
-      .catch((error) => this.setState({
-        successAlertShow: false,
-        failAlertShow: true,
-      }));
+    const { register } = this.props;
+    register(this.state);
   };
 
   render() {
-    const { successAlertShow, failAlertShow } = this.state;
     return (
       <section className="container">
+        <Link
+          className="col-sm-1"
+          to="/login"
+        >Login</Link>
         <form>
-          <Alert key="success" show={successAlertShow} variant="success">
-            Registration was successful
-          </Alert>
-          <Alert key="danger" show={failAlertShow} variant="danger">
-            Something was wrong.
-          </Alert>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input onChange={this.onChangeEmail} type="email" className="form-control" id="email" aria-describedby="emailHelp" />
@@ -86,4 +75,12 @@ class RegisterPage extends Component {
   }
 }
 
-export default RegisterPage;
+const mapStateToProps = state => ({
+  createdUser: state.auth.createdUser,
+});
+
+const mapDispatchToProps = dispatch => ({
+  register: user => dispatch(registerAction(user)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterPage);
