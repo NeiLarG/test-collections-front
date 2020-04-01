@@ -1,66 +1,44 @@
 import React, { Component } from 'react';
 import {
   Route,
-  Link,
   Switch,
   Redirect,
-  BrowserRouter,
+  Router,
 } from 'react-router-dom';
+import { Alert } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import RegisterPage from './RegisterPage';
 import LoginPage from './LoginPage';
+import { clearAction } from '../actions/alert.actions';
 import '../styles/App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isAuthentificate: false,
-    };
-  }
-
-  componentDidMount() {
-    this.setState({
-      isAuthentificate: localStorage.getItem('user') ? true : false
+    const { history, clear } = this.props;
+    history.listen(() => {
+      clear();
     });
   }
 
-  onClickLogout = () => {
-    localStorage.removeItem('user');
-    this.setState({ isAuthentificate: false });
-  };
-
   render() {
-    const { history } = this.props;
-    const { isAuthentificate } = this.state;
+    const { history, alert } = this.props;
     return (
       <>
-        <BrowserRouter history={history}>
+        <Router history={history}>
           <div className="container">
             <header className="container">
               <h1 className="row justify-content-center">Collections</h1>
-              <section className="row justify-content-center">
-                <Link
-                  className="col-sm-1"
-                  to="/login"
-                  style={{ display: isAuthentificate ? 'none' : 'block' }}
-                >
-                  <button type="button" className="btn btn-outline-dark">Login page</button>
-                </Link>
-                <Link
-                  className="col-sm-1"
-                  to="/register"
-                  style={{ display: isAuthentificate ? 'none' : 'block' }}
-                >
-                  <button type="button" className="btn btn-outline-dark">Register page</button>
-                </Link>
-                <button
-                  type="button"
-                  onClick={this.onClickLogout}
-                  className="col-sm-1 btn btn-outline-dark"
-                  style={{ display: isAuthentificate ? 'block' : 'none' }}>
-                    Logout
-                </button>
-              </section>
+              {alert.successMessage &&
+                <Alert key="success" variant="success">
+                  {alert.successMessage}
+                </Alert>
+              }
+              {alert.errorMessage &&
+                <Alert key="danger" variant="danger">
+                  {alert.errorMessage}
+                </Alert>
+              }
             </header>
             <main>
               <Switch>
@@ -70,10 +48,18 @@ class App extends Component {
               </Switch>
             </main>
           </div>
-        </BrowserRouter>
+        </Router>
       </>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  alert: state.alert,
+});
+
+const mapDispatchToProps = dispatch => ({
+  clear: user => dispatch(clearAction()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

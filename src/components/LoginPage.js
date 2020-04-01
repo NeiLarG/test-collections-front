@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Alert } from 'react-bootstrap';
-import { login } from '../services/auth.service';
+import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { loginAction } from '../actions/auth.actions';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -8,8 +9,6 @@ class LoginPage extends Component {
     this.state = {
       email: '',
       password: '',
-      successAlertShow: false,
-      failAlertShow: false,
     };
   }
 
@@ -22,28 +21,18 @@ class LoginPage extends Component {
   };
 
   onClickLogin = () => {
-    login(this.state)
-      .then(() => this.setState({
-        successAlertShow: true,
-        failAlertShow: false,
-      }))
-      .catch(() => this.setState({
-        successAlertShow: false,
-        failAlertShow: true,
-      }));
+    const { login } = this.props;
+    login(this.state);
   };
 
   render() {
-    const { successAlertShow, failAlertShow } = this.state;
     return (
       <section className="container">
+         <Link
+            className="col-sm-1"
+            to="/register"
+          >Register page</Link>
         <form>
-          <Alert key="success" show={successAlertShow} variant="success">
-            Login was successful
-          </Alert>
-          <Alert key="danger" show={failAlertShow} variant="danger">
-            Something was wrong.
-          </Alert>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
             <input onChange={this.onChangeEmail} type="email" className="form-control" id="email" aria-describedby="emailHelp" />
@@ -59,4 +48,12 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+const mapStateToProps = state => ({
+  createdUser: state.auth.createdUser,
+});
+
+const mapDispatchToProps = dispatch => ({
+  login: user => dispatch(loginAction(user)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
