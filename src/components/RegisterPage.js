@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { registerAction } from '../actions/auth.actions';
 
@@ -41,12 +40,8 @@ class RegisterPage extends Component {
   };
 
   render() {
-    return (
+    return (      
       <section className="container">
-        <Link
-          className="col-sm-1"
-          to="/login"
-        >Login</Link>
         <form>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
@@ -68,7 +63,7 @@ class RegisterPage extends Component {
             <label htmlFor="birthDate">Birthdate</label>
             <input onChange={this.onChangeBirthDate} type="date" className="form-control" id="birthDate" />
           </div>
-          <button type="button" onClick={this.onClickRegister} className="btn btn-primary">Registration</button>
+         <button type="button" onClick={this.onClickRegister} className="btn btn-primary">Registration</button>
         </form>
       </section>
     );

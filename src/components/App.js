@@ -2,15 +2,23 @@ import React, { Component } from 'react';
 import {
   Route,
   Switch,
-  Redirect,
   Router,
 } from 'react-router-dom';
+import {
+  Navbar,
+  Nav, 
+  Container, 
+} from "react-bootstrap";
+import logo from './logo.png'
 import { Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import RegisterPage from './RegisterPage';
-import LoginPage from './LoginPage';
 import { clearAction } from '../actions/alert.actions';
 import '../styles/App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import Home from './HomePage'
+import Register from './RegisterPage'
+import Login from './LoginPage'
 
 class App extends Component {
   constructor(props) {
@@ -24,11 +32,32 @@ class App extends Component {
   render() {
     const { history, alert } = this.props;
     return (
-      <>
+      <>     
+        <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
+          <Container>
+           <Navbar.Brand href="/" >
+              <img 
+               src={logo}
+               height="30"
+               width="30"
+                className="d-inline-block align-top"
+               alt="Logo"
+              /> Collections
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="mr-auto">
+               <Nav.Link href ="/"> Главная </Nav.Link>
+               <Nav.Link href ="/register"> Регистрация </Nav.Link>
+               <Nav.Link href ="/login"> Логин </Nav.Link>
+              </Nav>
+           </Navbar.Collapse>
+          </Container>
+        </Navbar> 
+
         <Router history={history}>
           <div className="container">
             <header className="container">
-              <h1 className="row justify-content-center">Collections</h1>
               {alert.successMessage &&
                 <Alert key="success" variant="success">
                   {alert.successMessage}
@@ -39,15 +68,13 @@ class App extends Component {
                   {alert.errorMessage}
                 </Alert>
               }
-            </header>
-            <main>
-              <Switch>
-                <Redirect exact from="/" to="/login" />
-                <Route exact path="/register" component={RegisterPage} />
-                <Route exact path="/login" component={LoginPage} />
-              </Switch>
-            </main>
+            </header>            
           </div>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/register" component={Register} />
+            <Route exact path="/login" component={Login} />
+        </Switch>
         </Router>
       </>
     );
