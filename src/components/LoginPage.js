@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loginAction } from '../actions/auth.actions';
 
@@ -26,12 +25,8 @@ class LoginPage extends Component {
   };
 
   render() {
-    return (
+    return (      
       <section className="container">
-         <Link
-            className="col-sm-1"
-            to="/register"
-          >Register page</Link>
         <form>
           <div className="form-group">
             <label htmlFor="email">Email address</label>
