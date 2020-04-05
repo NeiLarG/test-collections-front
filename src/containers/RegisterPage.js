@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { registerAction } from '../actions/auth.actions';
 
 class RegisterPage extends Component {
@@ -40,27 +41,34 @@ class RegisterPage extends Component {
   };
 
   render() {
+    const { auth } = this.props;
+    if (auth.loggedInUser) {
+      return <Redirect to="/" />
+    }
+    if (auth.createdUser) {
+      return <Redirect to="/login" />
+    }
     return (      
       <section className="container">
         <form>
           <div className="form-group">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">Электронная почта</label>
             <input onChange={this.onChangeEmail} type="email" className="form-control" id="email" aria-describedby="emailHelp" />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Пароль</label>
             <input onChange={this.onChangePassword} type="password" className="form-control" id="password" />
           </div>
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm password</label>
+            <label htmlFor="confirmPassword">Повторите пароль</label>
             <input onChange={this.onChangeConfirmPassword} type="password" className="form-control" id="confirmPassword" />
           </div>
           <div className="form-group">
-            <label htmlFor="nickName">Nickname</label>
+            <label htmlFor="nickName">Никнэйм</label>
             <input onChange={this.onChangeNickName} type="text" className="form-control" id="nickName" />
           </div>
           <div className="form-group">
-            <label htmlFor="birthDate">Birthdate</label>
+            <label htmlFor="birthDate">Дата день рождения</label>
             <input onChange={this.onChangeBirthDate} type="date" className="form-control" id="birthDate" />
           </div>
          <button type="button" onClick={this.onClickRegister} className="btn btn-primary">Registration</button>
@@ -71,7 +79,7 @@ class RegisterPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  createdUser: state.auth.createdUser,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = dispatch => ({
