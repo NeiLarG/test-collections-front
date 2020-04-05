@@ -5,7 +5,7 @@ class CollectionRow extends Component {
 
   onClickDeleteCollection = (event) => {
     const { deleteCollection } = this.props;
-    deleteCollection(event.target.id);
+    deleteCollection(parseInt(event.target.id));
   };
 
   render() {
