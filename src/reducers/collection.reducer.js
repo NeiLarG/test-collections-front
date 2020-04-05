@@ -8,7 +8,7 @@ export default (state = {}, action) => {
     case 'DELETE_COLLECTION':
       return {
         ...state,
-        collections: state.collections.filter(collection => collection.id != action.payload),
+        collections: state.collections.filter(collection => collection.id !== action.payload),
       };
     default:
       return state;
