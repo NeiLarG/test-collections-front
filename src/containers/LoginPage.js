@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { loginAction } from '../actions/auth.actions';
 
 class LoginPage extends Component {
@@ -25,15 +26,19 @@ class LoginPage extends Component {
   };
 
   render() {
+    const { auth } = this.props;
+    if (auth.loggedInUser) {
+      return <Redirect to="/" />
+    }
     return (      
       <section className="container">
         <form>
           <div className="form-group">
-            <label htmlFor="email">Email address</label>
+            <label htmlFor="email">Электронная почта</label>
             <input onChange={this.onChangeEmail} type="email" className="form-control" id="email" aria-describedby="emailHelp" />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Пароль</label>
             <input onChange={this.onChangePassword} type="password" className="form-control" id="password" />
           </div>
           <button type="button" onClick={this.onClickLogin} className="btn btn-primary">Login</button>
@@ -44,7 +49,7 @@ class LoginPage extends Component {
 }
 
 const mapStateToProps = state => ({
-  createdUser: state.auth.createdUser,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = dispatch => ({

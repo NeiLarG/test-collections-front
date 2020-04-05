@@ -22,17 +22,31 @@ function logoutActionCreator() {
   };
 }
 
+function checkLoginActionCreator(data) {
+  return {
+    type: 'CHECK_LOGIN',
+    payload: data,
+  };
+}
+
+function resetRegisteredUserActionCreator() {
+  return {
+    type: 'RESET_REGISTERED_USER',
+    payload: null,
+  };
+}
+
 export function registerAction(user) {
   return (dispatch) => {
     register(user)
       .then(response => {
         dispatch(registerActionCreator(response.data));
         dispatch(clearActionCreator());
-        dispatch(successActionCreator('User successfully registered'));
+        dispatch(successActionCreator('Пользователь успешно зарегистрирован'));
       })
       .catch(() => {
         dispatch(clearActionCreator());
-        dispatch(errorActionCreator('User registration failed'));
+        dispatch(errorActionCreator('Ошибка регистрации'));
       });
   };
 }
@@ -44,11 +58,10 @@ export function loginAction(user) {
       localStorage.setItem('user', JSON.stringify(response.data));
       dispatch(loginActionCreator(response.data));
       dispatch(clearActionCreator());
-      dispatch(successActionCreator('Successfuly login'));
     })
     .catch(() => {
       dispatch(clearActionCreator());
-      dispatch(errorActionCreator('Login failed'));
+      dispatch(errorActionCreator('Ошибка входа'));
     });
   };
 }
@@ -58,6 +71,19 @@ export function logoutAction() {
     localStorage.removeItem('user');
     dispatch(logoutActionCreator());
     dispatch(clearActionCreator());
-    dispatch(successActionCreator('Successfuly logout'));
+  };
+}
+
+export function checkLoginAction() {
+  return (dispatch) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    dispatch(checkLoginActionCreator(user));
+    dispatch(clearActionCreator());
+  };
+}
+
+export function resetRegisteredUserAction() {
+  return (dispatch) => {
+    dispatch(resetRegisteredUserActionCreator());
   };
 }

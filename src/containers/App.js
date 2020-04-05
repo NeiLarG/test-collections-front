@@ -3,59 +3,75 @@ import {
   Route,
   Switch,
   Router,
+  Link,
 } from 'react-router-dom';
 import {
   Navbar,
   Nav, 
   Container, 
 } from "react-bootstrap";
-import logo from './logo.png'
 import { Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { clearAction } from '../actions/alert.actions';
-import '../styles/App.css';
+import { logoutAction, checkLoginAction, resetRegisteredUserAction } from '../actions/auth.actions';
+import '../styles/style.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Home from './HomePage'
-import Register from './RegisterPage'
-import Login from './LoginPage'
+import HomePage from './HomePage'
+import RegisterPage from './RegisterPage'
+import LoginPage from './LoginPage'
 
 class App extends Component {
   constructor(props) {
     super(props);
-    const { history, clear } = this.props;
+    const { history, clear, checkLogin, resetRegisteredUser } = this.props;
     history.listen(() => {
+      resetRegisteredUser();
       clear();
     });
+    checkLogin();
   }
 
+  onClickLogout = () => {
+    const { logout } = this.props;
+    logout();
+  };
+
   render() {
-    const { history, alert } = this.props;
+    const { history, alert, auth } = this.props;
     return (
       <>     
+        <Router history={history}>
         <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
           <Container>
-           <Navbar.Brand href="/" >
+           <Navbar.Brand>
               <img 
-               src={logo}
+               src="/images/logo.png"
                height="30"
                width="30"
-                className="d-inline-block align-top"
-               alt="Logo"
+               className="d-inline-block align-top"
+               alt=""
               /> Collections
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="mr-auto">
-               <Nav.Link href ="/"> Главная </Nav.Link>
-               <Nav.Link href ="/register"> Регистрация </Nav.Link>
-               <Nav.Link href ="/login"> Логин </Nav.Link>
+                <Link className="nav-link" to="/">Главная</Link>
+                {!auth.loggedInUser ?
+                  <>
+                    <Link className="nav-link" to="/register">Регистрация</Link>
+                    <Link className="nav-link" to="/login">Логин</Link>
+                  </>
+                :
+                <>
+                  <Nav.Link>[{auth.loggedInUser.account.email}] -> </Nav.Link>
+                  <Nav.Link onClick={this.onClickLogout}>Выйти</Nav.Link>
+                </>
+                }
               </Nav>
            </Navbar.Collapse>
           </Container>
         </Navbar> 
-
-        <Router history={history}>
           <div className="container">
             <header className="container">
               {alert.successMessage &&
@@ -71,9 +87,9 @@ class App extends Component {
             </header>            
           </div>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/login" component={Login} />
+            <Route exact path="/" component={HomePage} />
+            <Route exact path="/register" component={RegisterPage} />
+            <Route exact path="/login" component={LoginPage} />
         </Switch>
         </Router>
       </>
@@ -82,11 +98,15 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
+  auth: state.auth,
   alert: state.alert,
 });
 
 const mapDispatchToProps = dispatch => ({
-  clear: user => dispatch(clearAction()),
+  clear: () => dispatch(clearAction()),
+  logout: () => dispatch(logoutAction()),
+  checkLogin: () => dispatch(checkLoginAction()),
+  resetRegisteredUser: () => dispatch(resetRegisteredUserAction()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
